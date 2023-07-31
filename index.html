@@ -1,0 +1,43 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Calculator</title>
+</head>
+<body>
+  <h2>Simple Addition Calculator</h2>
+  <form id="addForm">
+    <input type="number" name="num1" placeholder="Enter first number" required>
+    <input type="number" name="num2" placeholder="Enter second number" required>
+    <button type="submit">Add</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    const addForm = document.getElementById('addForm');
+    const resultDiv = document.getElementById('result');
+
+    addForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const formData = new FormData(addForm);
+      const num1 = formData.get('num1');
+      const num2 = formData.get('num2');
+
+      const response = await fetch('/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ num1, num2 }),
+      });
+
+      const data = await response.json();
+      if (data.result !== undefined) {
+        resultDiv.innerText = `Result: ${data.result}`;
+      } else if (data.error !== undefined) {
+        resultDiv.innerText = `Error: ${data.error}`;
+      }
+    });
+  </script>
+</body>
+</html>
